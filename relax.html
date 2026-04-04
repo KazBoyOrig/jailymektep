@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Jaily Mektep – Релакс зона</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .relax-hero {
+      background: linear-gradient(160deg, var(--green-light) 0%, var(--blue-light) 100%);
+      border-radius: 28px;
+      padding: 3.5rem 2rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .relax-hero::before {
+      content: '✦';
+      position: absolute;
+      top: 20px; right: 40px;
+      font-size: 40px;
+      color: rgba(29,158,117,0.15);
+      animation: spin-slow 12s linear infinite;
+    }
+    .relax-hero::after {
+      content: '✦';
+      position: absolute;
+      bottom: 20px; left: 30px;
+      font-size: 28px;
+      color: rgba(55,138,221,0.12);
+      animation: spin-slow 8s linear infinite reverse;
+    }
+    @keyframes spin-slow { to { transform: rotate(360deg); } }
+
+    .relax-card {
+      background: var(--card);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .relax-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--green-light), transparent);
+      opacity: 0;
+      transition: opacity 0.35s;
+    }
+    .relax-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: var(--shadow-lg); }
+    .relax-card:hover::before { opacity: 1; }
+
+    .relax-icon {
+      font-size: 52px;
+      display: block;
+      margin-bottom: 1rem;
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      position: relative;
+    }
+    .relax-card:hover .relax-icon { transform: scale(1.2) rotate(-8deg); }
+
+    .relax-card h3 {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .relax-card p {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.7;
+      position: relative;
+    }
+
+    /* Timer */
+    .timer-wrap {
+      background: var(--card);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      padding: 2.5rem;
+      text-align: center;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+    .timer-display {
+      font-family: 'Playfair Display', serif;
+      font-size: 72px;
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1;
+      margin: 1rem 0;
+      letter-spacing: -2px;
+    }
+    .timer-ring {
+      width: 180px; height: 180px;
+      margin: 0 auto 1rem;
+      position: relative;
+    }
+    .timer-ring svg { transform: rotate(-90deg); }
+    .timer-ring circle {
+      fill: none;
+      stroke: var(--green-light);
+      stroke-width: 8;
+    }
+    .timer-ring .progress {
+      stroke: var(--green);
+      stroke-dasharray: 502;
+      stroke-dashoffset: 0;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s linear;
+    }
+    .timer-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .timer-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1;
+    }
+    .timer-sec { font-size: 13px; color: var(--text3); }
+    .timer-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
+    .timer-preset {
+      padding: 8px 16px;
+      border-radius: 50px;
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text2);
+      transition: background 0.2s, color 0.2s, transform 0.2s;
+    }
+    .timer-preset:hover,
+    .timer-preset.active { background: var(--green); color: #fff; transform: scale(1.05); border-color: var(--green); }
+  </style>
+</head>
+<body class="page-fade-in">
+<nav>
+  <a href="index.html" class="logo"><div class="logo-dot"></div>Jaily Mektep</a>
+  <div class="nav-links">
+    <a href="index.html"    class="nav-link">Басты</a>
+    <a href="theory.html"   class="nav-link">Теория</a>
+    <a href="psych.html"    class="nav-link">Психолог</a>
+    <a href="training.html" class="nav-link">Тренинг</a>
+    <a href="relax.html"    class="nav-link">Релакс</a>
+    <a href="parents.html"  class="nav-link">Ата-ана</a>
+    <a href="teachers.html" class="nav-link">Мұғалім</a>
+    <a href="contact.html"  class="nav-link">Кеңес</a>
+  </div>
+  <button class="nav-burger"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="page-wrap">
+  <div class="section">
+
+    <div class="relax-hero reveal">
+      <div class="section-label" style="justify-content:center;margin-bottom:1rem">Релакс зона</div>
+      <h1 class="section-title">Демал және <em>тыныштал</em></h1>
+      <p style="font-size:16px;color:var(--text2);margin-top:0.75rem">Тыныш бол. Бәрі жақсы болады.</p>
+    </div>
+
+    <div class="grid-3" style="margin-bottom:3rem">
+      <div class="relax-card reveal delay-1">
+        <span class="relax-icon">🌬️</span>
+        <h3>Тыныс алу жаттығулары</h3>
+        <p>Терең тыныс алу жүйке жүйесін тыныштандырып, мазасыздықты азайтады.</p>
+      </div>
+      <div class="relax-card reveal delay-2">
+        <span class="relax-icon">🧘</span>
+        <h3>Медитация</h3>
+        <p>Күніне 5–10 минут медитация концентрацияны күшейтеді.</p>
+      </div>
+      <div class="relax-card reveal delay-3">
+        <span class="relax-icon">🎵</span>
+        <h3>Жеңіл музыка</h3>
+        <p>Тыныш музыка кортизол деңгейін төмендетеді.</p>
+      </div>
+      <div class="relax-card reveal delay-1">
+        <span class="relax-icon">🌿</span>
+        <h3>Табиғат</h3>
+        <p>Табиғатта 20 минут болу стрессті 50% төмендетеді.</p>
+      </div>
+      <div class="relax-card reveal delay-2">
+        <span class="relax-icon">📓</span>
+        <h3>Күнделік жазу</h3>
+        <p>Сезімдерді қағазға түсіру психологиялық жеңілдік береді.</p>
+      </div>
+      <div class="relax-card reveal delay-3">
+        <span class="relax-icon">☕</span>
+        <h3>Шай салты</h3>
+        <p>Жылы сусын ішу "баяулау" сигналын береді.</p>
+      </div>
+    </div>
+
+    <!-- Meditation Timer -->
+    <div class="reveal" style="margin-bottom:2rem">
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <div class="section-label" style="justify-content:center">Медитация таймері</div>
+        <h2 class="section-title" style="font-size:28px">Уақытты <em>өлшей</em></h2>
+      </div>
+      <div class="timer-wrap">
+        <div class="timer-ring">
+          <svg width="180" height="180" viewBox="0 0 180 180">
+            <circle cx="90" cy="90" r="80"/>
+            <circle cx="90" cy="90" r="80" class="progress" id="timerArc"/>
+          </svg>
+          <div class="timer-inner">
+            <div class="timer-num" id="timerNum">5:00</div>
+            <div class="timer-sec" id="timerSec">мин</div>
+          </div>
+        </div>
+        <div class="timer-btns">
+          <button class="timer-preset active" onclick="setTimer(this,300)">5 мин</button>
+          <button class="timer-preset" onclick="setTimer(this,600)">10 мин</button>
+          <button class="timer-preset" onclick="setTimer(this,900)">15 мин</button>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:1rem">
+          <button class="btn btn-primary btn-sm" onclick="toggleTimer()">
+            <span id="timerBtnLabel">▶ Бастау</span>
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="resetTimer()">↺ Қайта</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote-band reveal">
+      <p>«Сенің тыныштығың — сенің күшің»</p>
+    </div>
+
+  </div>
+</div>
+
+<footer><p>© 2025 Jaily Mektep · <a href="contact.html">Кеңес алу</a></p></footer>
+
+<script src="script.js"></script>
+<script>
+let timerTotal = 300, timerLeft = 300, timerRunning = false, timerIntvl = null;
+
+function setTimer(el, secs) {
+  resetTimer();
+  timerTotal = timerLeft = secs;
+  document.querySelectorAll('.timer-preset').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  updateTimerUI();
+}
+
+function toggleTimer() {
+  if (timerRunning) {
+    clearInterval(timerIntvl);
+    timerRunning = false;
+    document.getElementById('timerBtnLabel').textContent = '▶ Жалғастыру';
+  } else {
+    if (timerLeft <= 0) resetTimer();
+    timerRunning = true;
+    document.getElementById('timerBtnLabel').textContent = '⏸ Тоқтату';
+    timerIntvl = setInterval(() => {
+      timerLeft--;
+      updateTimerUI();
+      if (timerLeft <= 0) {
+        clearInterval(timerIntvl);
+        timerRunning = false;
+        document.getElementById('timerBtnLabel').textContent = '✓ Аяқталды';
+        document.getElementById('timerNum').textContent = '🎉';
+      }
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerIntvl);
+  timerRunning = false;
+  timerLeft = timerTotal;
+  document.getElementById('timerBtnLabel').textContent = '▶ Бастау';
+  updateTimerUI();
+}
+
+function updateTimerUI() {
+  const m = Math.floor(timerLeft / 60);
+  const s = timerLeft % 60;
+  document.getElementById('timerNum').textContent = m + ':' + String(s).padStart(2,'0');
+  const circ = 2 * Math.PI * 80;
+  const offset = circ * (1 - timerLeft / timerTotal);
+  document.getElementById('timerArc').style.strokeDashoffset = offset;
+}
+updateTimerUI();
+</script>
+</body>
+</html>

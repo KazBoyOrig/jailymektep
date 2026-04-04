@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Jaily Mektep – Тренингтер</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .exercise-card {
+      background: var(--card);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      transition: box-shadow 0.3s;
+    }
+    .exercise-card:hover { box-shadow: var(--shadow-md); }
+    .ex-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 1.5rem;
+    }
+    .ex-num {
+      width: 40px; height: 40px;
+      background: var(--green);
+      color: #fff;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .ex-title { font-size: 20px; font-weight: 800; }
+
+    /* Breathing timer */
+    .breath-wrap { text-align: center; padding: 1rem 0; }
+    .breath-circle {
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: var(--green-light);
+      border: 3px solid var(--green-mid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--green-dark);
+      transition: transform 4s ease-in-out, background 4s ease-in-out;
+      position: relative;
+    }
+    .breath-circle::after {
+      content: '';
+      position: absolute;
+      inset: -12px;
+      border-radius: 50%;
+      border: 2px solid rgba(29,158,117,0.2);
+      transition: transform 4s ease-in-out, opacity 4s;
+    }
+    .breath-circle.expand { transform: scale(1.4); background: #a8dfc8; }
+    .breath-circle.expand::after { transform: scale(1.15); opacity: 0; }
+    .breath-timer {
+      font-family: 'Playfair Display', serif;
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 4px;
+    }
+    .breath-phase-label {
+      font-size: 13px;
+      color: var(--text3);
+      height: 18px;
+    }
+    .breath-btn {
+      margin-top: 1.25rem;
+      padding: 11px 28px;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), background 0.2s;
+    }
+    .breath-btn:hover { transform: scale(1.06); background: var(--green-dark); }
+    .round-counter {
+      font-size: 13px;
+      color: var(--text3);
+      margin-top: 8px;
+    }
+
+    /* Mood */
+    .mood-label {
+      font-size: 15px;
+      color: var(--text2);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Progress bar */
+    .progress-track {
+      height: 6px;
+      background: var(--bg);
+      border-radius: 3px;
+      margin-top: 1.25rem;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 3px;
+      transition: width 0.5s var(--ease-smooth);
+    }
+    .progress-label {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 4px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body class="page-fade-in">
+<nav>
+  <a href="index.html" class="logo"><div class="logo-dot"></div>Jaily Mektep</a>
+  <div class="nav-links">
+    <a href="index.html"    class="nav-link">Басты</a>
+    <a href="theory.html"   class="nav-link">Теория</a>
+    <a href="psych.html"    class="nav-link">Психолог</a>
+    <a href="training.html" class="nav-link">Тренинг</a>
+    <a href="relax.html"    class="nav-link">Релакс</a>
+    <a href="parents.html"  class="nav-link">Ата-ана</a>
+    <a href="teachers.html" class="nav-link">Мұғалім</a>
+    <a href="contact.html"  class="nav-link">Кеңес</a>
+  </div>
+  <button class="nav-burger"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="page-wrap">
+  <div class="section">
+
+    <div class="reveal">
+      <div class="section-label">Тренингтер</div>
+      <h1 class="section-title">Өзіңді <em>жақсы сезін!</em></h1>
+      <p class="section-sub" style="margin-bottom:3rem">Интерактивті жаттығуларды орындап, психологиялық жайлылығыңды арттыр.</p>
+    </div>
+
+    <!-- Exercise 1: Breathing -->
+    <div class="exercise-card reveal">
+      <div class="ex-header">
+        <div class="ex-num">1</div>
+        <div class="ex-title">Тыныс алу жаттығуы</div>
+      </div>
+      <div class="breath-wrap">
+        <div class="breath-circle" id="breathCircle">
+          <span id="breathLabel">Дайынсың ба?</span>
+        </div>
+        <div class="breath-timer" id="breathTimer">—</div>
+        <div class="breath-phase-label" id="breathPhase"></div>
+        <button class="breath-btn" id="breathBtn" onclick="startBreath()">▶ Бастау</button>
+        <div class="round-counter" id="roundCounter"></div>
+      </div>
+    </div>
+
+    <!-- Exercise 2: Mood -->
+    <div class="exercise-card reveal">
+      <div class="ex-header">
+        <div class="ex-num">2</div>
+        <div class="ex-title">Көңіл-күйді анықтау</div>
+      </div>
+      <p class="mood-label">Мен бүгін қалай сезініп тұрмын?</p>
+      <div class="mood-grid">
+        <button class="mood-btn" onclick="pickMood(this,'😊','Тамаша! Бүгін энергияң жоғары. Осы оң күйді сақтауға тырыс.')">😊</button>
+        <button class="mood-btn" onclick="pickMood(this,'😐','Орташа күн. Кішкентай демалыс немесе серуен жақсы болар.')">😐</button>
+        <button class="mood-btn" onclick="pickMood(this,'😢','Қиын сезіліп тұрсың. Психологпен сөйлесуге немесе жақын адаммен бөлісуге болады.')">😢</button>
+        <button class="mood-btn" onclick="pickMood(this,'😡','Ашуланып тұрсың. Терең тыныс алып, 10-нан кері санап көр.')">😡</button>
+        <button class="mood-btn" onclick="pickMood(this,'😴','Шаршаған сияқтысың. Демалыс пен ұйқы ең жақсы дәрі.')">😴</button>
+        <button class="mood-btn" onclick="pickMood(this,'🤩','Керемет! Сенің энергияң басқаларға да жұғады — бөліс!')">🤩</button>
+      </div>
+      <div class="mood-result" id="moodResult"></div>
+      <!-- Progress bar for mood tracking -->
+      <div id="moodProgress" style="display:none">
+        <div class="progress-track"><div class="progress-fill" id="moodBar" style="width:0%"></div></div>
+        <div class="progress-label" id="moodBarLabel"></div>
+      </div>
+    </div>
+
+    <!-- Exercise 3: Stress tags -->
+    <div class="exercise-card reveal">
+      <div class="ex-header">
+        <div class="ex-num">3</div>
+        <div class="ex-title">Стрессті жеңу</div>
+      </div>
+      <p style="font-size:14px;color:var(--text2);margin-bottom:4px">Бүгін өзіңді жақсы сезінуге не көмектесті? (бірнеше таңда)</p>
+      <div class="tag-cloud">
+        <button class="tag" onclick="toggleTag(this)">🎵 Музыка тыңдау</button>
+        <button class="tag" onclick="toggleTag(this)">🚶 Серуендеу</button>
+        <button class="tag" onclick="toggleTag(this)">💬 Досымен сөйлесу</button>
+        <button class="tag" onclick="toggleTag(this)">📖 Кітап оқу</button>
+        <button class="tag" onclick="toggleTag(this)">🎨 Сурет салу</button>
+        <button class="tag" onclick="toggleTag(this)">🍵 Шай ішу</button>
+        <button class="tag" onclick="toggleTag(this)">🌿 Табиғатта болу</button>
+        <button class="tag" onclick="toggleTag(this)">🧘 Медитация</button>
+      </div>
+      <div id="tagMsg" style="display:none;margin-top:1rem;padding:12px 16px;background:var(--blue-light);border-radius:14px;font-size:14px;color:var(--blue);font-weight:700;animation:slide-in 0.3s ease"></div>
+    </div>
+
+  </div>
+</div>
+
+<footer><p>© 2025 Jaily Mektep · <a href="contact.html">Кеңес алу</a></p></footer>
+
+<script src="script.js"></script>
+<script>
+/* ── Breathing Exercise ── */
+const phases = [
+  { label: 'Дем ал...', duration: 4, expand: true  },
+  { label: 'Ұстап тұр', duration: 4, expand: true  },
+  { label: 'Шығар...',  duration: 4, expand: false },
+];
+let breathInterval = null;
+let phaseIdx = 0, secs = 0, rounds = 0, running = false;
+
+function startBreath() {
+  if (running) {
+    clearInterval(breathInterval);
+    running = false;
+    document.getElementById('breathBtn').textContent = '▶ Бастау';
+    document.getElementById('breathCircle').classList.remove('expand');
+    document.getElementById('breathLabel').textContent = 'Дайынсың ба?';
+    document.getElementById('breathTimer').textContent = '—';
+    document.getElementById('breathPhase').textContent = '';
+    document.getElementById('roundCounter').textContent = '';
+    phaseIdx = 0; secs = 0; rounds = 0;
+    return;
+  }
+  running = true;
+  document.getElementById('breathBtn').textContent = '⏹ Тоқтату';
+  runPhase();
+}
+
+function runPhase() {
+  const ph = phases[phaseIdx];
+  secs = ph.duration;
+  document.getElementById('breathLabel').textContent = ph.label;
+  document.getElementById('breathPhase').textContent = ph.label;
+  document.getElementById('breathTimer').textContent = secs;
+
+  const circle = document.getElementById('breathCircle');
+  if (ph.expand) circle.classList.add('expand');
+  else circle.classList.remove('expand');
+
+  clearInterval(breathInterval);
+  breathInterval = setInterval(() => {
+    secs--;
+    document.getElementById('breathTimer').textContent = secs;
+    if (secs <= 0) {
+      clearInterval(breathInterval);
+      phaseIdx = (phaseIdx + 1) % phases.length;
+      if (phaseIdx === 0) {
+        rounds++;
+        document.getElementById('roundCounter').textContent = `Аяқталған айналым: ${rounds}`;
+      }
+      if (running) runPhase();
+    }
+  }, 1000);
+}
+
+/* ── Mood ── */
+const moodScores = { '😊': 80, '😐': 50, '😢': 20, '😡': 30, '😴': 40, '🤩': 100 };
+function pickMood(el, emoji, msg) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const result = document.getElementById('moodResult');
+  result.textContent = emoji + '  ' + msg;
+  result.className = 'mood-result show';
+
+  const score = moodScores[emoji] || 50;
+  const bar = document.getElementById('moodBar');
+  const prog = document.getElementById('moodProgress');
+  const lbl = document.getElementById('moodBarLabel');
+  prog.style.display = 'block';
+  setTimeout(() => { bar.style.width = score + '%'; }, 50);
+  lbl.textContent = 'Көңіл-күй деңгейі: ' + score + '%';
+}
+
+/* ── Stress tags ── */
+function toggleTag(el) {
+  el.classList.toggle('selected');
+  const selected = document.querySelectorAll('.tag.selected').length;
+  const msg = document.getElementById('tagMsg');
+  if (selected === 0) { msg.style.display = 'none'; return; }
+  msg.style.display = 'block';
+  msg.textContent = selected === 1
+    ? '👍 Жақсы таңдау! Осы әдісті жиі қолдан.'
+    : `🌟 ${selected} тәсіл таңдалды. Сен өзіңді күтуге дайынсың!`;
+}
+</script>
+</body>
+</html>

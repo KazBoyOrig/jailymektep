@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Jaily Mektep – Кеңес алу</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body class="page-fade-in">
+<nav>
+  <a href="index.html" class="logo"><div class="logo-dot"></div>Jaily Mektep</a>
+  <div class="nav-links">
+    <a href="index.html"    class="nav-link">Басты</a>
+    <a href="theory.html"   class="nav-link">Теория</a>
+    <a href="psych.html"    class="nav-link">Психолог</a>
+    <a href="training.html" class="nav-link">Тренинг</a>
+    <a href="relax.html"    class="nav-link">Релакс</a>
+    <a href="parents.html"  class="nav-link">Ата-ана</a>
+    <a href="teachers.html" class="nav-link">Мұғалім</a>
+    <a href="contact.html"  class="nav-link">Кеңес</a>
+  </div>
+  <button class="nav-burger"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="page-wrap">
+  <div class="section">
+
+    <div class="reveal" style="text-align:center;margin-bottom:3rem">
+      <div class="section-label" style="justify-content:center">Кеңес алу</div>
+      <h1 class="section-title">Бізге <em>жаз</em></h1>
+      <p class="section-sub" style="max-width:460px;margin:0 auto">Сұрағың, қиындығың немесе пікірің болса — анонимді түрде жіберуге болады.</p>
+    </div>
+
+    <div class="contact-wrap">
+      <div class="form-card reveal">
+        <div class="form-group">
+          <label>Мен кіммін?</label>
+          <select id="roleSelect">
+            <option value="">Таңда...</option>
+            <option value="student">🎒 Оқушымын</option>
+            <option value="parent">👨‍👩‍👧 Ата-анамын</option>
+            <option value="teacher">👩‍🏫 Мұғаліммін</option>
+            <option value="other">🙂 Басқа</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Атың (қалауың бойынша)</label>
+          <input type="text" id="nameInput" placeholder="Атыңды жаз немесе бос қалдыр..."/>
+        </div>
+        <div class="form-group">
+          <label>Сұрағың немесе хабарың</label>
+          <textarea id="msgInput" placeholder="Мұнда жаз..."></textarea>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem">
+          <input type="checkbox" id="anonCheck" style="width:18px;height:18px;accent-color:var(--green)"/>
+          <label for="anonCheck" style="font-size:14px;color:var(--text2);font-weight:600">Анонимді режим</label>
+        </div>
+        <button class="submit-btn" onclick="submitForm()">Жіберу →</button>
+        <div class="anon-note">🔒 Мәліметтерің сақталмайды</div>
+        <div class="success-msg" id="successMsg">
+          🎉 Рақмет! Хабарыңды алдық. Жауап береміз.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer><p>© 2025 Jaily Mektep · <a href="contact.html">Кеңес алу</a></p></footer>
+
+<script src="script.js"></script>
+<script>
+function submitForm() {
+  const msg = document.getElementById('msgInput').value.trim();
+  if (!msg) {
+    document.getElementById('msgInput').style.borderColor = 'var(--coral)';
+    document.getElementById('msgInput').focus();
+    return;
+  }
+  document.getElementById('msgInput').style.borderColor = '';
+  document.getElementById('successMsg').classList.add('show');
+  document.getElementById('nameInput').value = '';
+  document.getElementById('msgInput').value = '';
+  document.getElementById('roleSelect').selectedIndex = 0;
+}
+</script>
+</body>
+</html>
