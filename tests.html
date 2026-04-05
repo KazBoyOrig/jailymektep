@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Jaily Mektep – Психологиялық тесттер</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── Test shell ── */
+    .test-card {
+      background: var(--card);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 2rem;
+      transition: box-shadow 0.3s;
+    }
+    .test-card:hover { box-shadow: var(--shadow-md); }
+
+    .test-head {
+      padding: 1.75rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .test-head::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+    }
+    .test-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .test-head-info h2 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+    .test-head-info p  { font-size: 13px; color: var(--text2); line-height: 1.5; }
+    .test-badge {
+      margin-left: auto;
+      padding: 5px 12px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .test-body { padding: 1.75rem 2rem; }
+
+    /* Steps / progress */
+    .test-progress-bar {
+      height: 4px;
+      background: var(--bg);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    .test-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), var(--green-mid));
+      border-radius: 2px;
+      transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    .test-step { display: none; }
+    .test-step.active { display: block; animation: step-in 0.35s cubic-bezier(0.34,1.2,0.64,1); }
+    @keyframes step-in {
+      from { opacity:0; transform: translateX(16px); }
+      to   { opacity:1; transform: none; }
+    }
+
+    .q-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+    .q-counter {
+      font-size: 12px;
+      color: var(--text3);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Radio options */
+    .radio-opts { display: flex; flex-direction: column; gap: 8px; }
+    .radio-opt {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border);
+      background: var(--card);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text2);
+      transition: background 0.2s, border-color 0.2s, transform 0.25s cubic-bezier(0.34,1.56,0.64,1), color 0.2s;
+    }
+    .radio-opt:hover { transform: translateX(4px); border-color: var(--green-mid); color: var(--text); background: var(--green-light); }
+    .radio-opt input[type=radio] { accent-color: var(--green); width: 17px; height: 17px; flex-shrink: 0; }
+    .radio-opt.chosen { background: var(--green-light); border-color: var(--green); color: var(--green-dark); }
+
+    /* Color swatches (Luscher) */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 1rem;
+    }
+    .color-swatch {
+      aspect-ratio: 1;
+      border-radius: 18px;
+      border: 3px solid transparent;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), border-color 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .color-swatch:hover { transform: scale(1.08) rotate(-3deg); }
+    .color-swatch.picked {
+      border-color: var(--text);
+      box-shadow: 0 0 0 4px rgba(0,0,0,0.1);
+      transform: scale(1.06);
+    }
+    .color-swatch::after {
+      content: '✓';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: rgba(255,255,255,0.9);
+      opacity: 0;
+      font-weight: 900;
+      transition: opacity 0.2s;
+    }
+    .color-swatch.picked::after { opacity: 1; }
+    .color-name {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text2);
+      margin-top: 4px;
+    }
+
+    /* Rorschach textarea */
+    .rtest-area {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border);
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      background: var(--bg);
+      resize: none;
+      outline: none;
+      height: 120px;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .rtest-area:focus { border-color: var(--green); box-shadow: 0 0 0 4px rgba(29,158,117,0.1); }
+
+    /* Ink blot SVG */
+    .inkblot-wrap {
+      background: var(--bg);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    /* Nav buttons */
+    .test-nav {
+      display: flex;
+      gap: 10px;
+      margin-top: 1.5rem;
+      align-items: center;
+    }
+    .test-nav-btn {
+      padding: 11px 24px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      border: none;
+      transition: background 0.2s, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-next { background: var(--green); color: #fff; }
+    .btn-next:hover { background: var(--green-dark); transform: scale(1.04); }
+    .btn-back { background: var(--bg); color: var(--text2); border: 1.5px solid var(--border); }
+    .btn-back:hover { background: var(--card); transform: scale(1.02); }
+    .test-step-label { font-size: 13px; color: var(--text3); font-weight: 700; margin-left: auto; }
+
+    /* Result */
+    .test-result {
+      display: none;
+      animation: step-in 0.4s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .test-result.show { display: block; }
+    .result-band {
+      border-radius: 18px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .result-band h3 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+    .result-band p  { font-size: 14px; line-height: 1.7; }
+    .result-score {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .retry-btn {
+      padding: 10px 22px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      font-size: 13px; font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text2);
+      margin-top: 1rem;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .retry-btn:hover { background: var(--green-light); color: var(--green-dark); transform: scale(1.03); }
+
+    @media(max-width:600px) {
+      .test-head { flex-wrap: wrap; }
+      .test-badge { margin-left: 0; }
+      .color-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    }
+  </style>
+</head>
+<body class="page-fade-in">
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <a href="index.html" class="logo"><div class="logo-dot"></div>Jaily Mektep</a>
+  <div class="nav-links">
+    <a href="index.html"       class="nav-link">Басты</a>
+    <a href="theory.html"      class="nav-link">Теория</a>
+    <a href="psych.html"       class="nav-link">Психолог</a>
+    <a href="training.html"    class="nav-link">Тренинг</a>
+    <a href="tests.html"       class="nav-link">Тесттер</a>
+    <a href="relax.html"       class="nav-link">Релакс</a>
+    <a href="relaxcorner.html" class="nav-link">Релакс бұрышы</a>
+    <a href="parents.html"     class="nav-link">Ата-ана</a>
+    <a href="teachers.html"    class="nav-link">Мұғалім</a>
+    <a href="contact.html"     class="nav-link">Кеңес</a>
+  </div>
+  <button class="nav-burger"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="page-wrap">
+<div class="section">
+
+  <div class="reveal">
+    <div class="section-label">Диагностика</div>
+    <h1 class="section-title">Психологиялық <em>тесттер</em></h1>
+    <p class="section-sub" style="margin-bottom:3rem">Өзіңді танып-білу үшін 4 ғылыми тест. Нәтиже бірден шығады. Барлығы анонимді.</p>
+  </div>
+
+  <!-- ══ TEST 1: ФРУСТРАЦИЯ ══ -->
+  <div class="test-card reveal">
+    <div class="test-head" style="background:linear-gradient(120deg,var(--green-light),transparent)">
+      <div class="test-num" style="color:var(--green);opacity:0.25">01</div>
+      <div class="test-head-info">
+        <h2>Фрустрация шкаласы</h2>
+        <p>Стресске төзімділік пен фрустрация деңгейін анықтайды</p>
+      </div>
+      <div class="test-badge" style="background:var(--green-light);color:var(--green)">5 сұрақ</div>
+    </div>
+    <div class="test-body">
+      <div class="test-progress-bar"><div class="test-progress-fill" id="fp-bar" style="width:20%"></div></div>
+
+      <div class="test-step active" id="fq0">
+        <div class="q-counter">Сұрақ 1/5</div>
+        <div class="q-label">Күшті стресстік жағдайда өзіңді тыныш ұстай аласың ба?</div>
+        <div class="radio-opts" data-group="f" data-idx="0">
+          <label class="radio-opt"><input type="radio" name="f0" value="1"/> Мүлдем емес</label>
+          <label class="radio-opt"><input type="radio" name="f0" value="2"/> Сирек</label>
+          <label class="radio-opt"><input type="radio" name="f0" value="3"/> Орташа</label>
+          <label class="radio-opt"><input type="radio" name="f0" value="4"/> Жиі</label>
+          <label class="radio-opt"><input type="radio" name="f0" value="5"/> Өте жақсы</label>
+        </div>
+        <div class="test-nav">
+          <button class="test-nav-btn btn-next" onclick="fNext(0)">Келесі →</button>
+          <span class="test-step-label">1 / 5</span>
+        </div>
+      </div>
+
+      <div class="test-step" id="fq1">
+        <div class="q-counter">Сұрақ 2/5</div>
+        <div class="q-label">Қиындыққа қарсы шыдамдылығың қалай?</div>
+        <div class="radio-opts">
+          <label class="radio-opt"><input type="radio" name="f1" value="1"/> Өте төмен</label>
+          <label class="radio-opt"><input type="radio" name="f1" value="2"/> Төмен</label>
+          <label class="radio-opt"><input type="radio" name="f1" value="3"/> Орташа</label>
+          <label class="radio-opt"><input type="radio" name="f1" value="4"/> Жоғары</label>
+          <label class="radio-opt"><input type="radio" name="f1" value="5"/> Өте жоғары</label>
+        </div>
+        <div class="test-nav">
+          <button class="test-nav-btn btn-back" onclick="fGo(0)">← Артқа</button>
+          <button class="test-nav-btn btn-next" onclick="fNext(1)">Келесі →</button>
+          <span class="test-step-label">2 / 5</span>
+        </div>
+      </div>
+
+      <div class="test-step" id="fq2">
+        <div class="q-counter">Сұрақ 3/5</div>
+        <div class="q-label">Сенің жоспарың орындалмаса, реакцияң қандай?</div>
+        <div class="radio-opts">
+          <label class="radio-opt"><input type="radio" name="f2" value="1"/> Ашуланамын, долданамын</label>
+          <label class="radio-opt"><input type="radio" name="f2" value="2"/> Мазасызданамын</label>
+          <label class="radio-opt"><input type="radio" name="f2" value="3"/> Ренжимін, бірақ тез қайтамын</label>
+          <label class="radio-opt"><input type="radio" name="f2" value="4"/> Тыныш қабылдаймын</label>
+          <label class="radio-opt"><input type="radio" name="f2" value="5"/> Оны мүмкіндік деп қараймын</label>
+        </div>
+        <div class="test-nav">
+          <button class="test-nav-btn btn-back" onclick="fGo(1)">← Артқа</button>
+          <button class="test-nav-btn btn-next" onclick="fNext(2)">Келесі →</button>
+          <span class="test-step-label">3 / 5</span>
+        </div>
+      </div>
+
+      <div class="test-step" id="fq3">
+        <div class="q-counter">Сұрақ 4/5</div>
+        <div class="q-label">Сыни пікір алғанда не сезінесің?</div>
+        <div class="radio-opts">
+          <label class="radio-opt"><input type="radio" name="f3" value="1"/> Бірден қорғанысқа өтемін</label>
+          <label class="radio-opt"><input type="radio" name="f3" value="2"/> Ренжимін</label>
+          <label class="radio-opt"><input type="radio" name="f3" value="3"/> Орташа реакция</label>
+          <label class="radio-opt"><input type="radio" name="f3" value="4"/> Пайдалы деп қабылдаймын</label>
+          <label class="radio-opt"><input type="radio" name="f3" value="5"/> Алғыс айтамын</label>
+        </div>
+        <div class="test-nav">
+          <button class="test-nav-btn btn-back" onclick="fGo(2)">← Артқа</button>
+          <button class="test-nav-btn btn-next" onclick="fNext(3)">Келесі →</button>
+          <span class="test-step-label">4 / 5</span>
+        </div>
+      </div>
+
+      <div class="test-step" id="fq4">
+        <div class="q-counter">Сұрақ 5/5</div>
+        <div class="q-label">Күндізгі стрессті кешке де алып жүресің бе?</div>
+        <div class="radio-opts">
+          <label class="radio-opt"><input type="radio" name="f4" value="1"/> Иә, үнемі</label>
+          <label class="radio-opt"><input type="radio" name="f4" value="2"/> Жиі</label>
+          <label class="radio-opt"><input type="radio" name="f4" value="3"/> Кейде</label>
+          <label class="radio-opt"><input type="radio" name="f4" value="4"/> Сирек</label>
+          <label class="radio-opt"><input type="radio" name="f4" value="5"/> Жоқ, босататын амалым бар</label>
+        </div>
+        <div class="test-nav">
+          <button class="test-nav-btn btn-back" onclick="fGo(3)">← Артқа</button>
+          <button class="test-nav-btn btn-next" onclick="fCalc()">Нәтиже →</button>
+          <span class="test-step-label">5 / 5</span>
+        </div>
+      </div>
+
+      <div class="test-result" id="f-result">
+        <div class="result-band" id="f-result-band">
+          <div class="result-score" id="f-score"></div>
+          <h3 id="f-title"></h3>
+          <p id="f-desc"></p>
+        </div>
+        <button class="retry-btn" onclick="fReset()">↺ Қайталау</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TEST 2: ЛЮШЕР ══ -->
+  <div class="test-card reveal">
+    <div class="test-head" style="background:linear-gradient(120deg,var(--blue-light),transparent)">
+      <div class="test-num" style="color:var(--blue);opacity:0.25">02</div>
+      <div class="test-head-info">
+        <h2>Люшер түстер тесті</h2>
+        <p>Таңдаған түс арқылы эмоционалдық жағдайды анықтайды</p>
+      </div>
+      <div class="test-badge" style="background:var(--blue-light);color:var(--blue)">Проективті</div>
+    </div>
+    <div class="test-body">
+      <div class="test-step active" id="lq0">
+        <div class="q-label">Қазіргі сезіміңізге сәйкес келетін түсті таңдаңыз:</div>
+        <div class="color-grid" id="luscher-grid">
+          <div>
+            <div class="color-swatch" style="background:#D32F2F" onclick="lPick(this,'қызыл')"></div>
+            <div class="color-name">Қызыл</div>
+          </div>
+          <div>
+            <div class="color-swatch" style="background:#1565C0" onclick="lPick(this,'көк')"></div>
+            <div class="color-name">Көк</div>
+          </div>
+          <div>
+            <div class="color-swatch" style="background:#2E7D32" onclick="lPick(this,'жасыл')"></div>
+            <div class="color-name">Жасыл</div>
+          </div>
+          <div>
+            <div class="color-swatch" style="background:#F9A825" onclick="lPick(this,'сары')"></div>
+            <div class="color-name">Сары</div>
+          </div>
+          <div>
+            <div class="color-swatch" style="background:#6A1B9A" onclick="lPick(this,'күлгін')"></div>
+            <div class="color-name">Күлгін</div>
+          </div>
+          <div>
+            <div class="color-swatch" style="background:#BF360C" onclick="lPick(this,'қоңыр')"></div>
+            <div class="color-name">Қоңыр</div>
+          </div>
+          <div>
+            <div class="color-swatch" style="background:#37474F" onclick="lPick(this,'сұр')"></div>
+            <div class="color-name">Сұр</div>
+          </div>
+          <div>
+            <div class="color-swatch" style="background:#212121" onclick="lPick(this,'қара')"></div>
+            <div class="color-name">Қара</div>
+          </div>
+        </div>
+        <div class="test-nav">
+          <button class="test-nav-btn btn-next" onclick="lCalc()">Нәтиже →</button>
+        </div>
+      </div>
+      <div class="test-result" id="l-result">
+        <div class="result-band" id="l-result-band">
+          <div style="font-size:36px;margin-bottom:8px" id="l-icon"></div>
+          <h3 id="l-title"></h3>
+          <p id="l-desc"></p>
+        </div>
+        <button class="retry-btn" onclick="lReset()">↺ Қайталау</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TEST 3: АЙЗЕНК ══ -->
+  <div class="test-card reveal">
+    <div class="test-head" style="background:linear-gradient(120deg,var(--amber-light),transparent)">
+      <div class="test-num" style="color:var(--amber);opacity:0.3">03</div>
+      <div class="test-head-info">
+        <h2>Айзенк тесті</h2>
+        <p>Экстраверсия/интроверсия және эмоционалдық тұрақтылықты анықтайды</p>
+      </div>
+      <div class="test-badge" style="background:var(--amber-light);color:#7a5200">6 сұрақ</div>
+    </div>
+    <div class="test-body">
+      <div class="test-progress-bar"><div class="test-progress-fill" id="ep-bar" style="width:16%"></div></div>
+
+      <div id="eysenck-steps">
+        <!-- steps rendered by JS -->
+      </div>
+
+      <div class="test-result" id="e-result">
+        <div class="result-band" id="e-result-band">
+          <div style="font-size:32px;margin-bottom:10px" id="e-icon"></div>
+          <h3 id="e-title"></h3>
+          <p id="e-desc"></p>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:1rem" id="e-tags"></div>
+        <button class="retry-btn" onclick="eReset()">↺ Қайталау</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TEST 4: РОРШАХ ══ -->
+  <div class="test-card reveal">
+    <div class="test-head" style="background:linear-gradient(120deg,var(--coral-light),transparent)">
+      <div class="test-num" style="color:var(--coral);opacity:0.25">04</div>
+      <div class="test-head-info">
+        <h2>Роршах тесті</h2>
+        <p>Сиялы дақ суретіне жазылған жауап арқылы ішкі жай-күйді байқайды</p>
+      </div>
+      <div class="test-badge" style="background:var(--coral-light);color:#7a2a10">Проективті</div>
+    </div>
+    <div class="test-body">
+      <div class="test-step active" id="rq0">
+        <div class="inkblot-wrap">
+          <svg width="220" height="180" viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg">
+            <g fill="#1a1a18" opacity="0.82">
+              <!-- symmetric inkblot shape -->
+              <ellipse cx="110" cy="90" rx="18" ry="40"/>
+              <ellipse cx="110" cy="70" rx="10" ry="14"/>
+              <!-- left wing -->
+              <path d="M110 80 C85 60 40 50 30 75 C20 100 55 115 85 105 C95 115 100 95 110 90Z"/>
+              <path d="M110 100 C90 125 50 130 45 115 C40 100 70 95 95 105Z"/>
+              <ellipse cx="72" cy="68" rx="10" ry="7" transform="rotate(-20,72,68)"/>
+              <!-- right wing (mirror) -->
+              <path d="M110 80 C135 60 180 50 190 75 C200 100 165 115 135 105 C125 115 120 95 110 90Z"/>
+              <path d="M110 100 C130 125 170 130 175 115 C180 100 150 95 125 105Z"/>
+              <ellipse cx="148" cy="68" rx="10" ry="7" transform="rotate(20,148,68)"/>
+              <!-- center details -->
+              <ellipse cx="110" cy="58" rx="6" ry="8"/>
+              <circle cx="104" cy="52" r="3"/>
+              <circle cx="116" cy="52" r="3"/>
+            </g>
+          </svg>
+        </div>
+        <div class="q-label">Суретте не көресіз? Не еске түседі? Еркін жазыңыз:</div>
+        <textarea class="rtest-area" id="ror-text" placeholder="Мысалы: «Жарқанат», «екі адам», «бабочка», «орман» — не болса да жазуға болады..."></textarea>
+        <div class="test-nav">
+          <button class="test-nav-btn btn-next" onclick="rCalc()">Нәтиже →</button>
+        </div>
+      </div>
+
+      <div class="test-result" id="r-result">
+        <div class="result-band" id="r-result-band">
+          <div style="font-size:32px;margin-bottom:10px" id="r-icon"></div>
+          <h3 id="r-title"></h3>
+          <p id="r-desc"></p>
+        </div>
+        <div class="tip" style="margin-top:1rem">
+          <strong>Ескерту:</strong> Роршах тесті тек мамандармен толық талдануы тиіс. Бұл — бастапқы бағыт ғана.
+        </div>
+        <button class="retry-btn" onclick="rReset()">↺ Қайталау</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip reveal">
+    <strong>Маңызды:</strong> Бұл тесттер толық диагностика емес, тек өзіндік бақылауға арналған бағыт. Нәтижелер туралы толық кеңес алу үшін психологқа жүгіңіз.
+  </div>
+
+</div>
+</div>
+
+<footer><p>© 2025 Jaily Mektep · <a href="contact.html">Кеңес алу</a></p></footer>
+
+<script src="script.js"></script>
+<script>
+/* ═══════════════════════════════
+   TEST 1 — ФРУСТРАЦИЯ
+═══════════════════════════════ */
+let fAnswers = [null,null,null,null,null];
+
+function fGo(idx) {
+  document.querySelectorAll('[id^="fq"]').forEach(el => el.classList.remove('active'));
+  document.getElementById('fq' + idx).classList.add('active');
+  document.getElementById('fp-bar').style.width = ((idx+1)/5*100) + '%';
+  document.getElementById('f-result').classList.remove('show');
+}
+
+function fNext(idx) {
+  const checked = document.querySelector('input[name="f'+idx+'"]:checked');
+  if (!checked) { alert('Жауапты таңдаңыз'); return; }
+  fAnswers[idx] = +checked.value;
+  document.querySelectorAll('input[name="f'+idx+'"]').forEach(r => {
+    r.closest('.radio-opt').classList.toggle('chosen', r.checked);
+  });
+  if (idx < 4) fGo(idx+1);
+  else fCalc();
+}
+
+function fCalc() {
+  const checked = document.querySelector('input[name="f4"]:checked');
+  if (!checked) { alert('Жауапты таңдаңыз'); return; }
+  fAnswers[4] = +checked.value;
+  const total = fAnswers.reduce((a,b) => a + (b||0), 0);
+  let title, desc, color;
+  if (total <= 10) {
+    title = 'Жоғары фрустрация'; color = '#FAECE7';
+    desc = 'Сіз стресске өте сезімтал болуы мүмкін. Тыныс алу жаттығулары мен психологпен сөйлесу ұсынылады.';
+  } else if (total <= 17) {
+    title = 'Орташа фрустрация'; color = '#FAEEDA';
+    desc = 'Орташа деңгей. Кейде стресс жинақталады, бірақ жалпы жағдай жақсы. Демалысқа назар аударыңыз.';
+  } else {
+    title = 'Төмен фрустрация'; color = '#E1F5EE';
+    desc = 'Жақсы нәтиже! Сіз стресске жақсы төзеді. Психологиялық тұрақтылығыңыз жоғары.';
+  }
+  document.getElementById('fp-bar').style.width = '100%';
+  document.getElementById('f-score').textContent = total + '/25';
+  document.getElementById('f-title').textContent = title;
+  document.getElementById('f-desc').textContent = desc;
+  document.getElementById('f-result-band').style.background = color;
+  document.querySelectorAll('[id^="fq"]').forEach(el => el.classList.remove('active'));
+  document.getElementById('f-result').classList.add('show');
+}
+
+function fReset() {
+  fAnswers = [null,null,null,null,null];
+  document.getElementById('f-result').classList.remove('show');
+  document.querySelectorAll('input[name^="f"]').forEach(r => { r.checked = false; r.closest('.radio-opt').classList.remove('chosen'); });
+  fGo(0);
+}
+
+/* ═══════════════════════════════
+   TEST 2 — ЛЮШЕР
+═══════════════════════════════ */
+let lPicked = null;
+const lData = {
+  'қызыл':  { icon:'🔥', title:'Энергия және белсенділік', desc:'Сіз қазір өте белсенді, мотивацияңыз жоғары. Бірақ артық ашуланшақтықтан сақтаныңыз.', bg:'#FAECE7' },
+  'көк':    { icon:'🌊', title:'Тыныштық және сенімділік', desc:'Сіз тепе-теңдік пен тыныштықты іздеуде. Эмоционалдық жағдайыңыз тұрақты.', bg:'#E6F1FB' },
+  'жасыл':  { icon:'🌿', title:'Бейімділік пен үйлесімділік', desc:'Сіз тыныш, іштей теңдестірілген. Табиғатпен уақыт өткізу сізге жақсы сезінуге көмектеседі.', bg:'#E1F5EE' },
+  'сары':   { icon:'☀️', title:'Оптимизм және шығармашылық', desc:'Сіз позитивті, жаңа идеяларға ашықсыз. Шығармашылық жобалар сізге энергия береді.', bg:'#FAEEDA' },
+  'күлгін': { icon:'🔮', title:'Сезімталдық және интуиция', desc:'Сізде күшті интуиция бар, сезімдеріңіз тереңдеу. Жалғыздыққа мұқтаж болуыңыз мүмкін.', bg:'#F3E8FF' },
+  'қоңыр':  { icon:'🪵', title:'Тіршілік және тұрақтылық', desc:'Сіз жерге тартылған, іс жүзіндегі адамсыз. Физикалық демалыс сізге маңызды.', bg:'#FFF3E0' },
+  'сұр':    { icon:'🌫️', title:'Бейтараптық пен шаршау', desc:'Сіз тыныштық пен дем алуды іздеуде. Тым ашылып кетпей, ішкі ресурсыңызды толтырыңыз.', bg:'#F5F5F5' },
+  'қара':   { icon:'🌑', title:'Наразылық пен қарсылық', desc:'Сіз белгілі бір жағдайға наразысыз. Психологпен сөйлесу немесе жазу дерті сізге жеңілдік береді.', bg:'#ECEFF1' },
+};
+
+function lPick(el, color) {
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('picked'));
+  el.classList.add('picked');
+  lPicked = color;
+}
+
+function lCalc() {
+  if (!lPicked) { alert('Түсті таңдаңыз'); return; }
+  const d = lData[lPicked];
+  document.getElementById('l-icon').textContent = d.icon;
+  document.getElementById('l-title').textContent = d.title;
+  document.getElementById('l-desc').textContent = d.desc;
+  document.getElementById('l-result-band').style.background = d.bg;
+  document.getElementById('lq0').classList.remove('active');
+  document.getElementById('l-result').classList.add('show');
+}
+
+function lReset() {
+  lPicked = null;
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('picked'));
+  document.getElementById('l-result').classList.remove('show');
+  document.getElementById('lq0').classList.add('active');
+}
+
+/* ═══════════════════════════════
+   TEST 3 — АЙЗЕНК
+═══════════════════════════════ */
+const eQs = [
+  { q:'Жаңа адамдармен оңай танысасың ба?',       a:[{v:'E',t:'Иә, оңай'},{v:'N',t:'Орташа'},{v:'I',t:'Қиын'}] },
+  { q:'Жалғыз өзің болғанды жақсы көресің бе?',   a:[{v:'I',t:'Иә, жиі'},{v:'N',t:'Кейде'},{v:'E',t:'Жоқ'}] },
+  { q:'Эмоцияларыңды жасыратын жерде ұстайсың ба?', a:[{v:'I',t:'Иә'},{v:'N',t:'Кейде'},{v:'E',t:'Жоқ'}] },
+  { q:'Стресске тез берілесің бе?',                a:[{v:'Ns',t:'Иә, тез'},{v:'N',t:'Орташа'},{v:'St',t:'Жоқ'}] },
+  { q:'Топта жұмыс жасауды жақсы көресің бе?',    a:[{v:'E',t:'Иә'},{v:'N',t:'Байланысты'},{v:'I',t:'Жоқ'}] },
+  { q:'Болашақ туралы алаңдайсың ба?',            a:[{v:'Ns',t:'Жиі'},{v:'N',t:'Кейде'},{v:'St',t:'Сирек'}] },
+];
+let eStep = 0, eVotes = { E:0, I:0, Ns:0, St:0 };
+
+function eRender() {
+  const container = document.getElementById('eysenck-steps');
+  container.innerHTML = '';
+  eQs.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'test-step' + (i === eStep ? ' active' : '');
+    div.id = 'eq' + i;
+    div.innerHTML = `
+      <div class="q-counter">Сұрақ ${i+1}/${eQs.length}</div>
+      <div class="q-label">${q.q}</div>
+      <div class="radio-opts">
+        ${q.a.map(a => `<label class="radio-opt"><input type="radio" name="e${i}" value="${a.v}"/> ${a.t}</label>`).join('')}
+      </div>
+      <div class="test-nav">
+        ${i > 0 ? `<button class="test-nav-btn btn-back" onclick="eBack(${i})">← Артқа</button>` : ''}
+        <button class="test-nav-btn btn-next" onclick="eNext(${i})">${i < eQs.length-1 ? 'Келесі →' : 'Нәтиже →'}</button>
+        <span class="test-step-label">${i+1} / ${eQs.length}</span>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function eNext(i) {
+  const checked = document.querySelector(`input[name="e${i}"]:checked`);
+  if (!checked) { alert('Жауапты таңдаңыз'); return; }
+  checked.closest('.radio-opt').classList.add('chosen');
+  eVotes[checked.value] = (eVotes[checked.value] || 0) + 1;
+  document.getElementById('ep-bar').style.width = ((i+2)/eQs.length*100) + '%';
+  if (i < eQs.length - 1) {
+    document.getElementById('eq' + i).classList.remove('active');
+    eStep = i + 1;
+    document.getElementById('eq' + eStep).classList.add('active');
+  } else {
+    eCalc();
+  }
+}
+function eBack(i) {
+  document.getElementById('eq' + i).classList.remove('active');
+  eStep = i - 1;
+  document.getElementById('eq' + eStep).classList.add('active');
+  document.getElementById('ep-bar').style.width = (eStep/eQs.length*100) + '%';
+}
+
+function eCalc() {
+  const isE = (eVotes.E||0) > (eVotes.I||0);
+  const isStable = (eVotes.St||0) >= (eVotes.Ns||0);
+  let icon, title, desc, color, tags = [];
+
+  if (isE && isStable)       { icon='🦁'; title='Сангвин'; color='#E1F5EE'; desc='Сіз жылдам, коммуникабельді, оптимист. Жаңа жағдайларға тез бейімделесіз. Лидерлікке бейімсіз.'; tags=['Экстраверт','Тұрақты']; }
+  else if (isE && !isStable) { icon='🌪️'; title='Холерик'; color='#FAECE7'; desc='Сіз белсенді, жарқын, бірақ тез ашуланасыз. Энергияңыз мол, бірақ тыныштықты сақтауды үйрену маңызды.'; tags=['Экстраверт','Невротикалық']; }
+  else if (!isE && isStable) { icon='🦉'; title='Флегматик'; color='#E6F1FB'; desc='Сіз тыныш, сенімді, терең ойлайтын адамсыз. Үлкен шешімдерді мұқият қабылдайсыз.'; tags=['Интроверт','Тұрақты']; }
+  else                        { icon='🌧️'; title='Меланхолик'; color='#F3E8FF'; desc='Сіз сезімтал, терең, эмпатиялы. Жалғыздықты жақсы көресіз, бірақ қолдауға мұқтажсыз.'; tags=['Интроверт','Сезімтал']; }
+
+  document.getElementById('e-icon').textContent = icon;
+  document.getElementById('e-title').textContent = title;
+  document.getElementById('e-desc').textContent = desc;
+  document.getElementById('e-result-band').style.background = color;
+  document.getElementById('e-tags').innerHTML = tags.map(t =>
+    `<span style="padding:5px 14px;background:rgba(0,0,0,0.06);border-radius:50px;font-size:12px;font-weight:800;color:var(--text2)">${t}</span>`
+  ).join('');
+  document.querySelectorAll('[id^="eq"]').forEach(el => el.classList.remove('active'));
+  document.getElementById('ep-bar').style.width = '100%';
+  document.getElementById('e-result').classList.add('show');
+}
+
+function eReset() {
+  eStep = 0; eVotes = { E:0, I:0, Ns:0, St:0 };
+  document.getElementById('e-result').classList.remove('show');
+  document.getElementById('ep-bar').style.width = '16%';
+  eRender();
+}
+eRender();
+
+/* ═══════════════════════════════
+   TEST 4 — РОРШАХ
+═══════════════════════════════ */
+const rKeywords = {
+  animal:   { words:['жарқанат','ат','аю','ит','мысық','бабочка','ұшқыш','жануар','аң','бұлан','ешкі','бүркіт','жылан'], icon:'🐾', title:'Табиғат пен ерікті сезім', desc:'Жануарлармен байланысты образдар жиі кездеседі. Бұл табиғи инстинктіге, бостандыққа деген ұмтылысты білдіруі мүмкін.', bg:'#E1F5EE' },
+  human:    { words:['адам','екі','бала','ана','бала','балалар','кісі','адамдар','серіктес','достар'], icon:'🧑‍🤝‍🧑', title:'Әлеуметтік байланыс', desc:'Адамдар мен қарым-қатынасқа деген ұмтылыс бар. Сіз өзгелермен байланысты жоғары бағалайсыз.', bg:'#E6F1FB' },
+  nature:   { words:['орман','бұлт','жер','тау','су','өрт','жаңбыр','теңіз','шөп','гүл','ағаш'], icon:'🌿', title:'Табиғатпен үндесу', desc:'Ішкі тыныштыққа ұмтылыс. Сізге табиғатта уақыт өткізу психологиялық ресурс береді.', bg:'#E1F5EE' },
+  abstract: { words:['бейнелер','форма','дақ','бояу','сызық','фигура','геометрия','өрнек'], icon:'🎨', title:'Шығармашылық ойлау', desc:'Абстрактілі ойлауыңыз дамыған. Сіз стандартты шеңберден шыға алатын шығармашыл адамсыз.', bg:'#FAEEDA' },
+};
+
+function rCalc() {
+  const text = (document.getElementById('ror-text').value || '').toLowerCase();
+  if (text.trim().length < 3) { alert('Кем дегенде бірнеше сөз жазыңыз'); return; }
+
+  let matched = null;
+  for (const [key, data] of Object.entries(rKeywords)) {
+    if (data.words.some(w => text.includes(w))) { matched = data; break; }
+  }
+  if (!matched) matched = {
+    icon:'💭', title:'Бірегей ішкі әлем',
+    desc:'Сіздің жауабыңыз стандарттан тыс. Бұл бірегей, терең ойлайтын жеке тұлғаны білдіреді. Психолог сіздің ішкі сезіміңізді толық ашуға көмектесе алады.',
+    bg:'#F3E8FF'
+  };
+
+  document.getElementById('r-icon').textContent = matched.icon;
+  document.getElementById('r-title').textContent = matched.title;
+  document.getElementById('r-desc').textContent = matched.desc;
+  document.getElementById('r-result-band').style.background = matched.bg;
+  document.getElementById('rq0').classList.remove('active');
+  document.getElementById('r-result').classList.add('show');
+}
+
+function rReset() {
+  document.getElementById('ror-text').value = '';
+  document.getElementById('r-result').classList.remove('show');
+  document.getElementById('rq0').classList.add('active');
+}
+</script>
+</body>
+</html>
