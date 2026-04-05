@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Сауалнама — Жайлы Мектеп</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;700;800;900&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Навигация (как на главной) -->
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-dot"></div>
+    Jaily Mektep
+  </a>
+  <div class="nav-links">
+    <a href="index.html"    class="nav-link">Басты</a>
+    <a href="theory.html"   class="nav-link">Теория</a>
+    <a href="psych.html"    class="nav-link">Психолог</a>
+    <a href="training.html" class="nav-link">Тренинг</a>
+    <a href="relax.html"      class="nav-link">Релакс</a>
+    <a href="relaxcorner.html" class="nav-link">Релакс бұрышы</a>
+    <a href="parents.html"  class="nav-link">Ата-ана</a>
+    <a href="teachers.html" class="nav-link">Мұғалім</a>
+    <a href="contact.html"  class="nav-link">Кеңес</a>
+    <a href="tests.html" class="nav-link">Тесттер</a>
+    <a href="survey.html"  class="nav-link active">Сауалнама</a>
+  </div>
+  <button class="nav-burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+  <!-- Основной контент -->
+  <main class="page-wrap page-fade-in">
+    
+    <section class="section" style="text-align: center; max-width: 700px; margin: 0 auto;">
+      
+      <div class="section-label reveal">Сауалнама</div>
+      
+      <h1 class="section-title reveal delay-1">
+        Сіздің пікіріңіз <em>біз үшін маңызды</em>
+      </h1>
+      
+      <p class="section-sub reveal delay-2" style="margin: 0 auto 2rem;">
+        «Жайлы мектеп» жобасын жақсарту үшін сіздің тәжірибеңіз бен ұсыныстарыңыз қажет. 
+        Сауалнама 3-5 минутты алады және толықтай анонимді.
+      </p>
+
+      <!-- Карточка с кнопкой перехода на опрос -->
+      <div class="card reveal delay-3" style="max-width: 500px; margin: 0 auto; text-align: left;">
+        <div class="card-icon" style="background: var(--green-light); color: var(--green);">📋</div>
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 0.5rem;">Google Forms сауалнамасы</h3>
+        <p style="font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 1.5rem;">
+          Сыртқы платформада ашылады. Деректеріңіз қауіпсіз сақталады.
+        </p>
+        <a href="https://forms.gle/if3wZaUmtuud1F2t7" target="_blank" rel="noopener" class="btn btn-primary" style="width: 100%; justify-content: center;">
+          Сауалнаманы бастау →
+        </a>
+      </div>
+
+      <!-- Дополнительные подсказки -->
+      <div class="grid-2 reveal delay-4" style="margin-top: 2.5rem; text-align: left;">
+        <div class="tip">
+          <strong>💡 Кеңес:</strong> Шынайы жауап беріңіз — бұл мектеп ортасын жақсартуға көмектеседі.
+        </div>
+        <div class="tip" style="border-left-color: var(--blue); background: var(--blue-light); color: var(--blue);">
+          <strong>🔒 Анонимділік:</strong> Жеке деректер жиналмайды, тек статистика үшін.
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Цитата в стиле сайта -->
+    <section class="section-sm">
+      <div class="quote-band reveal">
+        <p>«Әрбір дауыс — жақсы өзгерістерге қадам»</p>
+        <span>— Jaily Mektep командасы</span>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Футер -->
+  <footer>
+    © 2026 Jaily Mektep • <a href="index.html">Басты бет</a>
+  </footer>
+
+  <!-- Скрипты (как на главной) -->
+  <script>
+    // Анимация появления элементов
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    revealElements.forEach(el => observer.observe(el));
+
+    // Мобильное меню
+    const burger = document.querySelector('.nav-burger');
+    const navLinks = document.querySelector('.nav-links');
+    burger?.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+  </script>
+
+</body>
+</html>
